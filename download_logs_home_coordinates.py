@@ -90,7 +90,8 @@ def error_labels_to_ids(error_labels):
 def main():
     """ main script entry point """
     args = get_arguments()
-
+    filename = "global_home_positions.csv"
+    
     try:
         # the db_info_api sends a json file with a list of all public database entries
         db_entries_list = requests.get(url=args.db_info_api).json()
@@ -247,12 +248,25 @@ def main():
                             try:
                                 data = pd.read_csv("csvdata/"+entry_id+"_home_position_0"+".csv",usecols=['lat','lon'])
                                 for lat,lon in zip(data["lat"],data["lon"]):
-                                    if lat!=0 or lon!=0:
+                                    if str(lat)!='0.0' or str(lon)!='0.0':
                                         data.drop(data.index, inplace=True)
                                         data.loc[0]=[lat,lon]
                                         data['id']=entry_id
+                                        # entry_id = 'tempid'
+                                        # lat = 124
+                                        # lon = 123
+                                        home_posi = pd.read_csv(filename)[['entry_id','lat','lon']]
+                                        home_posi_new = pd.DataFrame({'entry_id':[entry_id],
+                                                        'lat':[lat],
+                                                        'lon':[lon]})
+
+
+                                        home_posi = home_posi.append(home_posi_new,ignore_index=True)
+                                        home_posi.drop_duplicates(subset=['entry_id','lat','lon'],inplace=True)
+                                        home_posi.to_csv(filename)
                                         break
                                 data.to_csv("csvdata/"+entry_id+"_home_position_0"+".csv")
+
                             except Exception as e:
                                 print("Oops!", e.__class__, "occurred.")
                         except Exception as e:
