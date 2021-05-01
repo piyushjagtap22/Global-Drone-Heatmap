@@ -1,3 +1,4 @@
+# Global Drone Heatmap
 
 Note that this demonstrates using deck.gl [as a Mapbox addon](https://medium.com/vis-gl/deckgl-and-mapbox-better-together-47b29d6d4fb1). This approach subjects to API and behavior changes in the Mapbox GL JS library. For alternative ways to use deck.gl with Mapbox, visit the project templates in [get-started](/examples/get-started).
 
@@ -29,3 +30,4 @@ npm start
 ### Data Source
 
 To build your own application with deck.gl as Mapbox custom layers, check out the [documentation of @deck.gl/mapbox module](../../../docs/api-reference/mapbox/overview.md)
+
