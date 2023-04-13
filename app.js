@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
+const routePrefix = process.env.ROUTE_PREFIX || '';
 
 
-app.get('/heatmap', (req, res) => {
+app.get(routePrefix + '/heatmap', (req, res) => {
   res.sendFile('index.html', { root: __dirname });
 });
 
@@ -12,6 +13,5 @@ app.get('/data.geojson', (req, res) => {
 
 const server = app.listen(0, () => {
   const port = server.address().port;
-  const url = `http://localhost:${port}/heatmap`;
-  console.log(`Server started on ${url}`);
+  console.log(port);
 });
