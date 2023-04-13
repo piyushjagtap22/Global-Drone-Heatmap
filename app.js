@@ -15,8 +15,9 @@ app.get('/data.geojson', (req, res) => {
   res.sendFile('data.geojson', { root: __dirname });
 });
 
-const server = app.listen(3000, () => {
-  //const port = server.address().port;
-  //console.log(port);
-  console.log('running on 3000')
+const server = app.listen(0, () => {
+  const port = server.address().port;
+  const url = `http://localhost:${port}`;
+  console.log(`Server listening on ${url}/heatmap`);
+
 });
