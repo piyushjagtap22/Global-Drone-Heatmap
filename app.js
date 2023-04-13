@@ -6,7 +6,7 @@ require('dotenv').config();
 app.set('view engine', 'html');
 app.engine('html', require('ejs').renderFile);
 
-app.get('/heatmap/heatmap', (req, res) => {
+app.get('/api/heatmap', (req, res) => {
   const mapboxToken = process.env.MAPBOX_TOKEN;
   res.render(__dirname + "/index.html", {token:mapboxToken});
 });
