@@ -24,7 +24,6 @@
     <script>
       mapboxgl.accessToken = 'pk.eyJ1Ijoia2lydGlzaCIsImEiOiJja2N4cjNvY2YwMnAzMnltdjQ0dzd0NHN0In0.F5BaepKPJjvC_Rp8rHUVyA';
 
-      console.log(mapboxgl.accessToken)
       var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v10',
@@ -32,11 +31,13 @@
         zoom: 1
       });
 
+      var dataUrl = window.location.origin + '/data.geojson'; // dynamically get the URL of the server
+  
       map.on('load', function () {
         // Add a geojson source containing home positions
         map.addSource('home-positions', {
           type: 'geojson',
-          data: 'http://localhost:5000/data.geojson'
+          data: dataUrl
         });
 
         // Add a heatmap layer based on the home positions

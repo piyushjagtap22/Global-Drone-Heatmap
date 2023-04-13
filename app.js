@@ -1,15 +1,17 @@
 const express = require('express');
 const app = express();
-require('dotenv').config()
+
 
 app.get('/heatmap', (req, res) => {
   res.sendFile('index.html', { root: __dirname });
 });
 
-app.get('/10_may_global_home_positions.geojson', (req, res) => {
+app.get('/data.geojson', (req, res) => {
   res.sendFile('data.geojson', { root: __dirname });
 });
 
-app.listen(3000, () => {
-  console.log('Server started on port 3000');
+const server = app.listen(0, () => {
+  const port = server.address().port;
+  const url = `http://localhost:${port}/heatmap`;
+  console.log(`Server started on ${url}`);
 });
