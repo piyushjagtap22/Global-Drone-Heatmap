@@ -8,7 +8,7 @@ app.engine('html', require('ejs').renderFile);
 
 app.get('/heatmap', (req, res) => {
   const mapboxToken = process.env.MAPBOX_TOKEN;
-  res.render(__dirname + "/index.html", {token:mapboxToken});
+  res.render(__dirname + "/heatmap.html", {token:mapboxToken});
 });
 
 app.get('/data', (req, res) => {
