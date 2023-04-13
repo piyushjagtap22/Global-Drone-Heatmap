@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/heatmap/:path*", "destination": "/api/:path*" },
+    { "source": "/heatmap", "destination": "/api" }
+  ]
+}
