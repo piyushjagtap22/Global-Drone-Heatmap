@@ -6,12 +6,12 @@ require('dotenv').config();
 app.set('view engine', 'html');
 app.engine('html', require('ejs').renderFile);
 
-app.get('/heatmap', (req, res) => {
+app.get('/heatmap.html', (req, res) => {
   const mapboxToken = process.env.MAPBOX_TOKEN;
   res.render(__dirname + "/heatmap.html", {token:mapboxToken});
 });
 
-app.get('/data', (req, res) => {
+app.get('/data.geojson', (req, res) => {
   res.sendFile('data.geojson', { root: __dirname });
 });
 
