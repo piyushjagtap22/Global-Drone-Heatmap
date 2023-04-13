@@ -22,8 +22,7 @@
   <body>
     <div id="map"></div>
     <script>
-      mapboxgl.accessToken = process.env.MAPBOX_TOKEN;
-
+      mapboxgl.accessToken =  '<%= token %>';
       var map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/light-v10',
