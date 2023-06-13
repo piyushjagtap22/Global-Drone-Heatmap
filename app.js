@@ -1,14 +1,29 @@
 const express = require('express');
+const cors = require('cors');
 const app = express();
+
+app.use(express.json());
+
+app.use(cors({
+  origin: '*'
+}));
 
 app.get('/heatmap', (req, res) => {
   res.sendFile('index.html', { root: __dirname });
 });
 
-app.get('/10_may_global_home_positions.geojson', (req, res) => {
+app.get('/data.geojson', (req, res) => {
   res.sendFile('data.geojson', { root: __dirname });
 });
 
-app.listen(3000, () => {
-  console.log('Server started on port 3000');
-});
+
+
+app.get('/', (req, res) => {
+  res.send('Hey ')
+})
+
+
+
+const server = app.listen(0, () => console.log(`Server started on port :`,server.address().port));
+// Export the Express API
+module.exports = app
