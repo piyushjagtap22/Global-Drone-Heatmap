@@ -19,7 +19,8 @@ app.get('/data.geojson', (req, res) => {
 });
 
 app.get('/', (req, res) => {
-  res.send('..')
+  const filePath = path.join(__dirname, 'index.html');
+  res.sendFile(filePath);
 })
 
 
