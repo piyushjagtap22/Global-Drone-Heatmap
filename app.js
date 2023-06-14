@@ -8,7 +8,7 @@ app.use(cors({
   origin: '*'
 }));
 
-app.get('/heatmap', (req, res) => {
+app.get('/', (req, res) => {
   res.sendFile('index.html', { root: __dirname });
 });
 
@@ -18,9 +18,9 @@ app.get('/data.geojson', (req, res) => {
 
 
 
-app.get('/', (req, res) => {
-  res.send('Hey ')
-})
+// app.get('/', (req, res) => {
+//   res.send('Hey ')
+// })
 
 
 
