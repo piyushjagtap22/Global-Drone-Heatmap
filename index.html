@@ -5,7 +5,11 @@
     <title>Global Drone Heatmap</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js"></script>
+    
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <style>
       body {
         margin: 0;
@@ -17,87 +21,168 @@
         bottom: 0;
         width: 100%;
       }
+
+      
+      
     </style>
   </head>
-  <body>
+  <body>    <header>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white" style="position: absolute; z-index: 1; width: 100%;">
+      <div class="container-fluid">
+        <a className="navbar-brand" >Heatmap plotting of drones as per flight data on 12 May 2020 of PX4 drones</a>
+      </div>
+    </nav>
+    <!-- Navbar -->
     <div id="map"></div>
+  </header>
+
+
     <script>
+      
       mapboxgl.accessToken =  'pk.eyJ1Ijoia2lydGlzaCIsImEiOiJja2N4cjNvY2YwMnAzMnltdjQ0dzd0NHN0In0.F5BaepKPJjvC_Rp8rHUVyA';
 
       var map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/light-v10',
+        style: 'mapbox://styles/mapbox/dark-v10',
         center: [0, 0],
         zoom: 1
       });
 
       map.on('load', function () {
         // Add a geojson source containing home positions
-        map.addSource('home-positions', {
+        map.addSource('earthquakes', {
           type: 'geojson',
           data: '12_may_global_home_positions.geojson'
           
         
 })
       ;
+      map.addLayer(
+            {
+                'id': 'earthquakes-heat',
+                'type': 'heatmap',
+                'source': 'earthquakes',
+                'maxzoom': 20,
+                'paint': {
+                    // Increase the heatmap weight based on frequency and property magnitude
+                    'heatmap-weight': [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'mag'],
+                        0,
+                        0,
+                        6,
+                        1
+                    ],
+                    // Increase the heatmap color weight weight by zoom level
+                    // heatmap-intensity is a multiplier on top of heatmap-weight
+                    'heatmap-intensity': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        0,
+                        1,
+                        9,
+                        3
+                    ],
+                    // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
+                    // Begin color ramp at 0-stop with a 0-transparancy color
+                    // to create a blur-like effect.
+                    'heatmap-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['heatmap-density'],
+                        0,
+                        'rgba(33,102,172,0)',
+                        0.2,
+                        'rgb(103,169,207)',
+                        0.4,
+                        'rgb(209,229,240)',
+                        0.6,
+                        'rgb(253,219,199)',
+                        0.8,
+                        'rgb(239,138,98)',
+                        1,
+                        'rgb(178,24,43)'
+                    ],
+                    // Adjust the heatmap radius by zoom level
+                    'heatmap-radius': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        10,
+                        13,
+                        15,
+                        20
+                    ],
+                    // Transition from heatmap to circle layer by zoom level
+                    'heatmap-opacity': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        7,
+                        1,
+                        9,
+                        0
+                    ]
+                }
+            },
+            'waterway-label'
+        );
 
-// Add a heatmap layer based on the home positions
-map.addLayer(
-  {
-    id: 'home-positions-heat',
-    type: 'heatmap',
-    source: 'home-positions',
-    maxzoom: 9,
-    paint: {
-      // Increase the heatmap weight based on frequency and property magnitude
-      'heatmap-weight': {
-        property: 'mag',
-        type: 'exponential',
-        stops: [
-          [0, 0],
-          [6, 1]
-        ]
-      },
-      // Increase the heatmap color weight weight by zoom level
-      // heatmap-intensity is a multiplier on top of heatmap-weight
-      'heatmap-intensity': {
-        stops: [
-          [0, 1],
-          [9, 3]
-        ]
-      },
-      // Color ramp for heatmap.  Domain is 0 (low) to 1 (high).
-      // Begin color ramp at 0-stop with a 0-transparency color
-      // to create a blur-like effect.
-      'heatmap-color': [
-        'interpolate',
-        ['linear'],
-        ['heatmap-density'],
-        0,
-        'rgba(33,102,172,0)',
-        0.2,
-        'rgb(103,169,207)',
-        0.4,
-        'rgb(209,229,240)',
-        0.6,
-        'rgb(253,219,199)',
-        0.8,
-        'rgb(239,138,98)',
-        1,
-        'rgb(178,24,43)'
-      ],
-      // Adjust the heatmap radius by zoom level
-      'heatmap-radius': {
-        stops: [
-          [0, 2],
-          [9, 20]
-        ]
-      }
-    }
-  },
-  'waterway-label'
-);
-});
+        map.addLayer(
+            {
+                'id': 'earthquakes-point',
+                'type': 'circle',
+                'source': 'earthquakes',
+                'minzoom': 7,
+                'paint': {
+                    // Size circle radius by earthquake magnitude and zoom level
+                    'circle-radius': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        7,
+                        ['interpolate', ['linear'], ['get', 'mag'], 1, 1, 6, 4],
+                        16,
+                        ['interpolate', ['linear'], ['get', 'mag'], 1, 5, 6, 50]
+                    ],
+                    // Color circle by earthquake magnitude
+                    'circle-color': [
+                        'interpolate',
+                        ['linear'],
+                        ['get', 'mag'],
+                        1,
+                        'rgba(33,102,172,0)',
+                        2,
+                        'rgb(103,169,207)',
+                        3,
+                        'rgb(209,229,240)',
+                        4,
+                        'rgb(253,219,199)',
+                        5,
+                        'rgb(239,138,98)',
+                        6,
+                        'rgb(178,24,43)'
+                    ],
+                    'circle-stroke-color': 'blue',
+                    'circle-stroke-width': 1,
+                    // Transition from heatmap to circle layer by zoom level
+                    'circle-opacity': [
+                        'interpolate',
+                        ['linear'],
+                        ['zoom'],
+                        7,
+                        0,
+                        8,
+                        1
+                    ]
+                }
+            },
+            'waterway-label'
+        );
+    });
 </script>
 </body>
 </html>
